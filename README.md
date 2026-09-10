@@ -331,7 +331,6 @@ energyMonitoring=false
 - IntelliJ IDEA
 - Git
 - GitHub
-
 # Course
 
 Software Design Patterns
