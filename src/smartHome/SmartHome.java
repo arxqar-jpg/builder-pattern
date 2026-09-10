@@ -1,16 +1,16 @@
 package smartHome;
 
 public class SmartHome {
-    private String homeName;
-    private boolean smartLighting;
-    private int securityCameraCount;
-    private boolean smartLock;
-    private double targetTemperature;
-    private boolean alarmSystem;
-    private String voiceAssistant;
-    private boolean energyMonitoring;
+    private final String homeName;
+    private final boolean smartLighting;
+    private final int securityCameraCount;
+    private final boolean smartLock;
+    private final double targetTemperature;
+    private final boolean alarmSystem;
+    private final String voiceAssistant;
+    private final boolean energyMonitoring;
 
-    public SmartHome(Boolean energyMonitoring, String voiceAssistant, Boolean alarmSystem, Double targetTemperature, Boolean smartLock, int securityCameraCount, Boolean smartLighting, String homeName) {
+    SmartHome(boolean energyMonitoring, String voiceAssistant, boolean alarmSystem, double targetTemperature, boolean smartLock, int securityCameraCount, boolean smartLighting, String homeName) {
         this.energyMonitoring = energyMonitoring;
         this.voiceAssistant = voiceAssistant;
         this.alarmSystem = alarmSystem;
@@ -66,4 +66,5 @@ public class SmartHome {
                 ", energyMonitoring=" + energyMonitoring +
                 '}';
     }
+
 }
