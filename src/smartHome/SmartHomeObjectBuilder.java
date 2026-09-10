@@ -57,7 +57,6 @@ public class SmartHomeObjectBuilder implements SmartHomeBuilder {
         this.energyMonitoring = energyMonitoring;
         return this;
     }
-
     public SmartHome getResult() {
         if (homeName == null || homeName.isBlank()) {
             throw new IllegalStateException("Home name is required");
