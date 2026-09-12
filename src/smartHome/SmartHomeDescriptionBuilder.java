@@ -72,7 +72,7 @@ public class SmartHomeDescriptionBuilder implements SmartHomeBuilder {
             throw new IllegalStateException("Target temperature must be between 5 and 35");
         }
 
-        return "=== Smart Home Description ===\n" +
+        return "Smart Home Description \n" +
                 "Home name: " + homeName + "\n" +
                 "Smart lighting: " + smartLighting + "\n" +
                 "Security cameras: " + securityCameraCount + "\n" +

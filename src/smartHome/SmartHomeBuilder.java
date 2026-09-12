@@ -1,7 +1,7 @@
 package smartHome;
 
 public interface SmartHomeBuilder {
-    SmartHomeBuilder setHomeName(String homeName);
+    SmartHomeBuilder setHomeName (String homeName);
     SmartHomeBuilder setSmartLighting(boolean smartLighting);
     SmartHomeBuilder setSecurityCameraCount(int securityCameraCount);
     SmartHomeBuilder setSmartLock(boolean smartLock);
