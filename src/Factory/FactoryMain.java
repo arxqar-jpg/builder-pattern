@@ -4,10 +4,12 @@ public class FactoryMain {
 
     public static void main(String[] args) {
 
-        SmartDeviceFactory factory = new SmartLightFactory();
+        SmartDeviceFactory lightFactory = new SmartLightFactory();
+        SmartDevice light = lightFactory.createDevice();
+        light.turnOn();
 
-        SmartDevice device = factory.createDevice();
-
-        device.turnOn();
+        SmartDeviceFactory cameraFactory = new SecurityCameraFactory();
+        SmartDevice camera = cameraFactory.createDevice();
+        camera.turnOn();
     }
 }
