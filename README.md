@@ -1,70 +1,552 @@
-# Smart Home Builder Pattern
+# Smart Home Design Patterns
 
 ## Project Description
 
-This project demonstrates the Builder creational design pattern in Java.
+This Java project demonstrates several creational design patterns using a Smart Home system.
 
-The product of this project is a Smart Home configuration. A Smart Home can contain several configurable components, including smart lighting, security cameras, a smart lock, temperature control, an alarm system, a voice assistant, and energy monitoring.
+The project currently contains:
 
-The Builder pattern is suitable for this project because a Smart Home contains many configuration options that can be constructed step by step.
+- Assignment #1 — Builder Pattern
+- Assignment #2 — Factory Method
+- Assignment #2 — Abstract Factory
 
-The same construction process can also produce different representations of the same configuration.
+The Smart Home domain was selected because it contains different devices, configurations, and related product families.
 
-## Project Structure
+---
 
-- `SmartHome` - Product class that represents the final Smart Home object.
-- `SmartHomeBuilder` - Builder interface that defines the construction steps.
-- `SmartHomeObjectBuilder` - Concrete Builder that creates a `SmartHome` object.
-- `SmartHomeDescriptionBuilder` - Concrete Builder that creates a text description.
-- `Director` - Defines reusable Smart Home configurations.
-- `Main` - Client that demonstrates and tests the Builder pattern.
+# Assignment #1 — Builder Pattern
 
-## Builder Pattern Implementation
+## Purpose
 
-The `SmartHomeBuilder` interface defines common construction steps.
+The Builder Pattern is used to construct complex objects step by step.
 
-Both concrete builders implement the same interface:
+A Smart Home can contain many configurable properties, such as:
 
-- `SmartHomeObjectBuilder`
-- `SmartHomeDescriptionBuilder`
+- Home name
+- Smart lighting
+- Security cameras
+- Smart lock
+- Target temperature
+- Alarm system
+- Voice assistant
+- Energy monitoring
 
-The `Director` works only with the `SmartHomeBuilder` interface. Therefore, the same construction sequence can be used with different builders.
+Instead of using one large constructor, the Builder Pattern allows these values to be configured step by step.
 
-For example:
+---
+
+## Builder Structure
+
+The Builder implementation contains:
+
+- `SmartHome` — Product
+- `SmartHomeBuilder` — Builder interface
+- `SmartHomeObjectBuilder` — Concrete Builder
+- `SmartHomeDescriptionBuilder` — Concrete Builder
+- `Director` — Defines reusable construction sequences
+- `Main` — Client
+
+Structure:
 
 ```text
-SmartHomeObjectBuilder objectBuilder = new SmartHomeObjectBuilder();
+Main
+  |
+  v
+Director
+  |
+  v
+SmartHomeBuilder
+  |
+  +-- SmartHomeObjectBuilder ------> SmartHome
+  |
+  +-- SmartHomeDescriptionBuilder -> String description
+```
+
+---
+
+## Builder Interface
+
+`SmartHomeBuilder` defines the common construction methods.
+
+Example:
+
+```java
+setHomeName(...)
+setSmartLighting(...)
+setSecurityCameraCount(...)
+setSmartLock(...)
+setTargetTemperature(...)
+setAlarmSystem(...)
+setVoiceAssistant(...)
+setEnergyMonitoring(...)
+```
+
+Both concrete builders implement the same interface.
+
+---
+
+## Different Representations
+
+The same construction process can produce different representations.
+
+Object representation:
+
+```java
+SmartHomeObjectBuilder objectBuilder =
+        new SmartHomeObjectBuilder();
 
 director.makeSecureHome(objectBuilder);
 
-SmartHome secureHome = objectBuilder.getResult();
+SmartHome secureHome =
+        objectBuilder.getResult();
 ```
 
-The same configuration can be created as a text representation:
+Text representation:
 
-```text
+```java
 SmartHomeDescriptionBuilder descriptionBuilder =
         new SmartHomeDescriptionBuilder();
 
 director.makeSecureHome(descriptionBuilder);
 
-String description = descriptionBuilder.getResult();
+String description =
+        descriptionBuilder.getResult();
 ```
 
-This demonstrates that the same construction steps can produce different representations.
+This demonstrates that the same construction steps can produce different results.
+
+---
 
 ## Ready Configurations
 
-The `Director` contains two reusable configurations:
+The `Director` contains reusable configurations:
 
 ```text
 makeSecureHome()
 makeBasicHome()
 ```
 
-`makeSecureHome()` creates a Smart Home with more security and smart features.
+`makeSecureHome()` creates a Smart Home with more security features.
 
-`makeBasicHome()` creates a simpler Smart Home configuration.
+`makeBasicHome()` creates a simpler configuration.
+
+---
+
+# Assignment #2 — Factory Method & Abstract Factory
+
+## Project Description
+
+Assignment #2 demonstrates two creational design patterns:
+
+- Factory Method
+- Abstract Factory
+
+The same Smart Home domain is used.
+
+Factory Method creates individual smart devices.
+
+Abstract Factory creates complete families of compatible Smart Home components.
+
+---
+
+# Part A — Factory Method
+
+## Purpose
+
+The Factory Method Pattern separates object creation from object usage.
+
+Instead of creating concrete devices directly in the client, the client asks a factory to create the required object.
+
+This reduces direct dependency between client code and concrete product classes.
+
+---
+
+## Factory Method Components
+
+The implementation contains:
+
+- `SmartDevice` — Product interface
+- `SmartLight` — Concrete Product
+- `SecurityCamera` — Concrete Product
+- `SmartDeviceFactory` — Creator
+- `SmartLightFactory` — Concrete Creator
+- `SecurityCameraFactory` — Concrete Creator
+- `FactoryMain` — Client/demo
+
+---
+
+## Product Interface
+
+All smart devices implement the same interface.
+
+```java
+public interface SmartDevice {
+
+    void turnOn();
+}
+```
+
+The interface defines common behavior for all smart devices.
+
+Structure:
+
+```text
+SmartDevice
+    |
+    +-- SmartLight
+    |
+    +-- SecurityCamera
+```
+
+---
+
+## Concrete Products
+
+### SmartLight
+
+`SmartLight` implements `SmartDevice`.
+
+It provides its own implementation of:
+
+```java
+turnOn()
+```
+
+### SecurityCamera
+
+`SecurityCamera` also implements `SmartDevice`.
+
+It provides its own implementation of:
+
+```java
+turnOn()
+```
+
+Both products can therefore be used through the same `SmartDevice` interface.
+
+---
+
+## Creator
+
+`SmartDeviceFactory` is the abstract Creator.
+
+```java
+public abstract SmartDevice createDevice();
+```
+
+The Creator defines how a device should be requested but does not decide which concrete device should be created.
+
+---
+
+## Concrete Creators
+
+### SmartLightFactory
+
+`SmartLightFactory` creates a `SmartLight`.
+
+```java
+@Override
+public SmartDevice createDevice() {
+    return new SmartLight();
+}
+```
+
+### SecurityCameraFactory
+
+`SecurityCameraFactory` creates a `SecurityCamera`.
+
+```java
+@Override
+public SmartDevice createDevice() {
+    return new SecurityCamera();
+}
+```
+
+---
+
+## Client Usage
+
+The client works with the general factory and product abstractions.
+
+```java
+SmartDeviceFactory lightFactory =
+        new SmartLightFactory();
+
+SmartDevice light =
+        lightFactory.createDevice();
+
+light.turnOn();
+```
+
+The same logic can be used for another product:
+
+```java
+SmartDeviceFactory cameraFactory =
+        new SecurityCameraFactory();
+
+SmartDevice camera =
+        cameraFactory.createDevice();
+
+camera.turnOn();
+```
+
+The client does not directly create:
+
+```text
+new SmartLight()
+new SecurityCamera()
+```
+
+Object creation is delegated to concrete factories.
+
+---
+
+## Factory Method Structure
+
+```text
+                    SmartDevice
+                   /           \
+                  /             \
+         SmartLight       SecurityCamera
+
+
+             SmartDeviceFactory
+              /               \
+             /                 \
+ SmartLightFactory     SecurityCameraFactory
+         |                     |
+         v                     v
+    SmartLight            SecurityCamera
+```
+
+---
+
+## Factory Method Output
+
+Example:
+
+```text
+IT IS TRUE
+SECURITY CAMERA IS ON
+```
+
+---
+
+# Part B — Abstract Factory
+
+## Purpose
+
+The Abstract Factory Pattern creates families of related objects.
+
+In this Smart Home system there are two product families:
+
+- Basic Smart Home
+- Premium Smart Home
+
+Each family contains:
+
+- Lighting
+- Security System
+
+---
+
+## Abstract Products
+
+Two product interfaces are used:
+
+```text
+Lighting
+SecuritySystem
+```
+
+`Lighting` defines:
+
+```java
+turnOn()
+```
+
+`SecuritySystem` defines:
+
+```java
+activate()
+```
+
+---
+
+# Basic Product Family
+
+The Basic family contains:
+
+```text
+BasicLighting
+BasicSecuritySystem
+```
+
+`BasicLighting` implements:
+
+```text
+Lighting
+```
+
+`BasicSecuritySystem` implements:
+
+```text
+SecuritySystem
+```
+
+---
+
+# Premium Product Family
+
+The Premium family contains:
+
+```text
+PremiumLighting
+PremiumSecuritySystem
+```
+
+`PremiumLighting` implements:
+
+```text
+Lighting
+```
+
+`PremiumSecuritySystem` implements:
+
+```text
+SecuritySystem
+```
+
+---
+
+## Abstract Factory
+
+`SmartHomeFactory` is the Abstract Factory interface.
+
+It defines methods for creating all products in one family.
+
+```java
+Lighting createLighting();
+
+SecuritySystem createSecuritySystem();
+```
+
+The interface does not specify whether Basic or Premium products are created.
+
+---
+
+## Concrete Factories
+
+### BasicSmartHomeFactory
+
+Creates the Basic product family.
+
+```text
+createLighting()
+        |
+        v
+BasicLighting
+
+createSecuritySystem()
+        |
+        v
+BasicSecuritySystem
+```
+
+### PremiumSmartHomeFactory
+
+Creates the Premium product family.
+
+```text
+createLighting()
+        |
+        v
+PremiumLighting
+
+createSecuritySystem()
+        |
+        v
+PremiumSecuritySystem
+```
+
+---
+
+## Client
+
+`SmartHomeClient` works only with abstractions.
+
+It uses:
+
+```text
+SmartHomeFactory
+Lighting
+SecuritySystem
+```
+
+Example:
+
+```java
+public SmartHomeClient(SmartHomeFactory factory) {
+
+    lighting =
+            factory.createLighting();
+
+    securitySystem =
+            factory.createSecuritySystem();
+}
+```
+
+The client does not directly create:
+
+```text
+BasicLighting
+PremiumLighting
+BasicSecuritySystem
+PremiumSecuritySystem
+```
+
+This allows the client to switch between product families without changing its main logic.
+
+---
+
+## Abstract Factory Structure
+
+```text
+                        SmartHomeFactory
+                       /                \
+                      /                  \
+        BasicSmartHomeFactory      PremiumSmartHomeFactory
+               |                          |
+         +-----+-----+              +-----+-----+
+         |           |              |           |
+         v           v              v           v
+ BasicLighting  BasicSecurity  PremiumLighting  PremiumSecurity
+```
+
+---
+
+## Abstract Factory Output
+
+```text
+BASIC SMART HOME
+BASIC LIGHTING IS ON
+BASIC SECURITY SYSTEM IS ACTIVE
+
+PREMIUM SMART HOME
+PREMIUM LIGHTING IS ON
+PREMIUM SECURITY SYSTEM IS ACTIVE
+```
+
+---
+
+# Factory Method vs Abstract Factory
+
+| Factory Method | Abstract Factory |
+|---|---|
+| Creates one product type | Creates a family of related products |
+| Uses Creator and Concrete Creators | Uses Abstract Factory and Concrete Factories |
+| Concrete Creator chooses the product | Concrete Factory creates a full family |
+| Example: SmartLight or SecurityCamera | Example: Basic or Premium Smart Home |
 
 ---
 
@@ -72,258 +554,221 @@ makeBasicHome()
 
 ## 1. Meaningful and Intention-Revealing Names
 
-Class, method, and variable names clearly describe their purpose.
+Class and method names clearly describe their purpose.
 
-Annotated examples:
+Bad example:
 
-```text
-SmartHomeObjectBuilder
-// Clearly shows that this builder creates a SmartHome object.
-
-SmartHomeDescriptionBuilder
-// Clearly shows that this builder creates a text description.
-
-setSecurityCameraCount()
-// Clearly describes which property is being configured.
-
-makeSecureHome()
-// Clearly describes which predefined configuration is created.
+```java
+Factory f;
+Device d;
 ```
 
-Using meaningful names makes the code easier to read and understand.
+Improved version:
+
+```java
+SmartDeviceFactory lightFactory;
+SmartDevice light;
+```
+
+Other meaningful names used in the project:
+
+```text
+SmartDeviceFactory
+SecurityCameraFactory
+BasicSmartHomeFactory
+PremiumSmartHomeFactory
+createDevice()
+createLighting()
+createSecuritySystem()
+```
+
+The improved names make the code easier to understand without additional comments.
 
 ---
 
 ## 2. Small Methods That Do One Thing
 
-Builder methods are small and have only one responsibility.
+Methods contain only the logic required for one task.
 
 Example:
 
-```text
+```java
 @Override
-public SmartHomeObjectBuilder setHomeName(String homeName) {
-    this.homeName = homeName;
-    return this;
+public SmartDevice createDevice() {
+    return new SmartLight();
 }
 ```
 
-This method does only two closely related actions:
+This method has one responsibility:
 
-1. Stores the home name.
-2. Returns the builder for method chaining.
-
-It does not contain unrelated logic.
+```text
+Create and return a SmartLight.
+```
 
 Another example:
 
-```text
+```java
 @Override
-public SmartHomeObjectBuilder setSmartLock(boolean smartLock) {
-    this.smartLock = smartLock;
-    return this;
+public Lighting createLighting() {
+    return new BasicLighting();
 }
 ```
 
-Each setter handles only one Smart Home property.
+It only creates the Basic lighting product.
+
+No unrelated logic is included.
 
 ---
 
-## 3. Small and Focused Classes
+## 3. Single Responsibility Principle
 
 Each class has one main responsibility.
 
+Examples:
+
 ```text
-SmartHome
-// Stores the final product data.
+SmartLight
+// Contains Smart Light behavior.
 
-SmartHomeBuilder
-// Defines common construction steps.
+SmartLightFactory
+// Creates Smart Light objects.
 
-SmartHomeObjectBuilder
-// Creates the object representation.
+SecurityCamera
+// Contains Security Camera behavior.
 
-SmartHomeDescriptionBuilder
-// Creates the text representation.
+SecurityCameraFactory
+// Creates Security Camera objects.
 
-Director
-// Defines reusable construction sequences.
-
-Main
-// Demonstrates how the pattern is used.
+SmartHomeClient
+// Uses products created by SmartHomeFactory.
 ```
 
-Separating responsibilities makes the project easier to understand, maintain, and extend.
+Before separation, creation logic and product behavior could exist in the same client class.
+
+After applying the patterns:
+
+```text
+Product class  -> contains product behavior
+Factory class  -> creates products
+Client class   -> uses products
+```
+
+This keeps responsibilities separated.
 
 ---
 
-## 4. Validated Construction
+## 4. Depend on Abstractions
 
-The builder validates important values before creating the final product.
+Client code works with interfaces and abstract classes instead of depending directly on concrete product classes.
 
-Example:
+Factory Method example:
+
+```java
+SmartDeviceFactory lightFactory =
+        new SmartLightFactory();
+
+SmartDevice light =
+        lightFactory.createDevice();
+```
+
+The variables use:
 
 ```text
-if (homeName == null || homeName.isBlank()) {
-    throw new IllegalStateException("Home name is required");
+SmartDeviceFactory
+SmartDevice
+```
+
+instead of concrete product types.
+
+Abstract Factory example:
+
+```java
+private final Lighting lighting;
+
+private final SecuritySystem securitySystem;
+
+public SmartHomeClient(SmartHomeFactory factory) {
+
+    lighting =
+            factory.createLighting();
+
+    securitySystem =
+            factory.createSecuritySystem();
 }
 ```
 
-This prevents the creation of a Smart Home without a valid name.
-
-The number of security cameras is also validated:
-
-```text
-if (securityCameraCount < 0) {
-    throw new IllegalStateException(
-            "Security camera count cannot be negative"
-    );
-}
-```
-
-The target temperature is checked as well:
-
-```text
-if (targetTemperature < 5 || targetTemperature > 35) {
-    throw new IllegalStateException(
-            "Target temperature must be between 5 and 35"
-    );
-}
-```
-
-Clear exceptions make invalid states easier to identify and debug.
+The client does not depend directly on Basic or Premium concrete products.
 
 ---
 
-## 5. Consistent Formatting and Code Structure
+## 5. Small and Focused Classes
 
-The project uses consistent naming, indentation, method structure, and class organization.
+Each class has a limited and clear purpose.
 
-For example, all Builder methods follow the same structure:
-
-```text
-@Override
-public SmartHomeObjectBuilder setEnergyMonitoring(boolean energyMonitoring) {
-    this.energyMonitoring = energyMonitoring;
-    return this;
-}
-```
-
-Another builder method follows the same format:
+Examples:
 
 ```text
-@Override
-public SmartHomeObjectBuilder setAlarmSystem(boolean alarmSystem) {
-    this.alarmSystem = alarmSystem;
-    return this;
-}
+BasicLighting
+// Basic lighting behavior.
+
+PremiumLighting
+// Premium lighting behavior.
+
+BasicSmartHomeFactory
+// Creates Basic-family products.
+
+PremiumSmartHomeFactory
+// Creates Premium-family products.
 ```
 
-Consistent formatting makes the source code predictable and easier to read.
+Instead of placing all creation logic inside one large class, the implementation separates responsibilities into small focused classes.
+
+This makes the code easier to:
+
+- Read
+- Maintain
+- Test
+- Extend
 
 ---
 
-# Fluent API
-
-The Builder uses method chaining.
-
-Each construction method returns the builder itself using:
+# Project Structure
 
 ```text
-return this;
+src
+│
+├── Factory
+│   ├── FactoryMain.java
+│   ├── SmartDevice.java
+│   ├── SmartDeviceFactory.java
+│   ├── SmartLight.java
+│   ├── SmartLightFactory.java
+│   ├── SecurityCamera.java
+│   └── SecurityCameraFactory.java
+│
+├── abstractfactory
+│   ├── AbstractFactoryMain.java
+│   ├── Lighting.java
+│   ├── SecuritySystem.java
+│   ├── BasicLighting.java
+│   ├── BasicSecuritySystem.java
+│   ├── PremiumLighting.java
+│   ├── PremiumSecuritySystem.java
+│   ├── SmartHomeFactory.java
+│   ├── BasicSmartHomeFactory.java
+│   ├── PremiumSmartHomeFactory.java
+│   └── SmartHomeClient.java
+│
+└── smartHome
+    ├── Director.java
+    ├── Main.java
+    ├── SmartHome.java
+    ├── SmartHomeBuilder.java
+    ├── SmartHomeObjectBuilder.java
+    └── SmartHomeDescriptionBuilder.java
 ```
-
-This allows configuration steps to be written in a readable sequence:
-
-```text
-builder
-        .setHomeName("Secure Home")
-        .setSmartLighting(true)
-        .setSecurityCameraCount(6)
-        .setSmartLock(true)
-        .setTargetTemperature(22.0)
-        .setAlarmSystem(true)
-        .setVoiceAssistant("Alexa")
-        .setEnergyMonitoring(true);
-```
-
-This makes the object construction process easy to read from top to bottom.
 
 ---
-
-# Product Immutability
-
-The final `SmartHome` product uses `final` fields.
-
-Example:
-
-```text
-private final String homeName;
-private final boolean smartLighting;
-private final int securityCameraCount;
-private final boolean smartLock;
-private final double targetTemperature;
-```
-
-The Product does not provide public setter methods.
-
-After a `SmartHome` object is created, its state cannot be changed through setters.
-
----
-
-# Validation Rules
-
-Before creating a Smart Home object, the builder checks that:
-
-- The home name is not null or empty.
-- The security camera count is not negative.
-- The target temperature is between 5 and 35 degrees.
-
-If a configuration is invalid, an `IllegalStateException` with a clear message is thrown.
-
----
-
-# Example Output
-
-```text
-=== OBJECT REPRESENTATION ===
-
-SmartHome{
-homeName='Secure Home',
-smartLighting=true,
-securityCameraCount=6,
-smartLock=true,
-targetTemperature=22.0,
-alarmSystem=true,
-voiceAssistant='Alexa',
-energyMonitoring=true
-}
-
-=== TEXT REPRESENTATION ===
-
-=== Smart Home Description ===
-Home name: Secure Home
-Smart lighting: true
-Security cameras: 6
-Smart lock: true
-Target temperature: 22.0
-Alarm system: true
-Voice assistant: Alexa
-Energy monitoring: true
-
-=== BASIC HOME ===
-
-SmartHome{
-homeName='Basic Home',
-smartLighting=true,
-securityCameraCount=2,
-smartLock=false,
-targetTemperature=23.0,
-alarmSystem=false,
-voiceAssistant='Google Assistant',
-energyMonitoring=false
-}
-```
 
 # Technologies
 
@@ -331,8 +776,35 @@ energyMonitoring=false
 - IntelliJ IDEA
 - Git
 - GitHub
+
+---
+
+# Assignment #2 Summary
+
+The Factory Method Pattern is used to create individual Smart Home devices through specialized factory classes.
+
+The Abstract Factory Pattern extends this concept by creating complete families of compatible Smart Home components.
+
+The project demonstrates:
+
+- Product interfaces
+- Concrete Products
+- Creator
+- Concrete Creators
+- Abstract Products
+- Abstract Factory
+- Concrete Factories
+- Client working with abstractions
+- Two product families
+- Clean Code principles
+
+---
+
 # Course
 
 Software Design Patterns
 
-Assignment #1 - Builder Pattern
+## Assignments
+
+- Assignment #1 — Builder Pattern
+- Assignment #2 — Factory Method & Abstract Factory
